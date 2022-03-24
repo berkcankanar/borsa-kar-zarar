@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="tr">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+    <title>Borsa Kar-Zarar</title>
+</head>
+
+<body class="d-flex" style="background-color: lightslategray;">
+    <div class="d-flex flex-column justify-content-around border border-2 border-danger my-3 p-4 mx-1 mx-lg-5 bg-light"
+        style="width: 40%; height: 400px;">
+        <div class="header" style="display: flex; justify-content: space-between;">
+            <h5>Hisse işlemleri Furkan</h5>
+            <a href="../index.html" class="btn btn-outline-warning">Berkcan</a>
+            <a href="#" class="btn btn-outline-warning">Furkan</a>
+        </div>
+        <form method="post" class="d-flex justify-content-around" action="javascript: hisseFunc();" id="kayıt"
+            autocomplete="off">
+            <div id="p">
+                <p>Tarih : </p>
+                <p>Sembol : </p>
+                <p>Adet : </p>
+                <p>Fiyat : </p>
+            </div>
+            <div class="d-flex flex-column">
+                <div class="form-group">
+                    <input type="date" id="tarih" class="form-control" required value="2021-01-01" autofocus
+                        tabindex="1" />
+                </div>
+                <div class="form-group">
+                    <input list="sembollerDOM" id="sembol" class="form-control" required tabindex="2"
+                        placeholder="Semboller" maxlength="5">
+                    <datalist id="sembollerDOM"></datalist>
+                </div>
+                <div class="form-group">
+                    <input type="number" id="adet" class="form-control" placeholder="Adet" tabindex="3" required>
+                </div>
+                <div class="form-group">
+                    <input type="number" id="fiyat" class="form-control" placeholder="Fiyat" tabindex="4" step="any"
+                        required>
+                </div>
+                <div class="form-group d-flex flex-row justify-content-around">
+                    <label class="form-check-label btn btn-outline-success alsatCheckbox" for="alış">Alış:
+                        <input class="form-check-input ms-2" type="radio" name="alışsatış" id="alış"
+                            class="form-control" tabindex="5" required />
+                    </label>
+                    <label class="form-check-label btn btn-outline-danger alsatCheckbox" for="satış">Satış:
+                        <input class="form-check-input ms-2" type="radio" name="alışsatış" id="satış"
+                            class="form-control" tabindex="6" />
+                    </label>
+                </div>
+                <input type="submit" value="Kaydet" class="btn btn-outline-primary mt-2 w-50 ms-auto" tabindex="7">
+                <input type="reset" value="" style="display: none;">
+            </div>
+        </form>
+    </div>
+    <div class="mx-1 mx-lg-5 my-3 bg-light border border-2 border-danger p-3" style="width: 60%;">
+        <div>
+            <span id="tableSpan1" class="span">Alış-Satış Tablosu</span>
+            <span id="tableSpan2" class="span">Kar-Zarar Tablosu</span>
+            <span id="tableSpan3" class="span">JS nesne verisi</span>
+            <span id="tableSpan4" class="span">JS sembol verisi</span>
+        </div>
+
+        <table class="table table-bordered" id="alışSatışTable">
+            <thead>
+                <tr style="position:relative; width: 100%;">
+                    <th>Tarih</th>
+                    <th class="d-flex">Sembol
+                        <svg height="25" width="25" class="ms-auto" style="cursor: pointer;"
+                            onclick="$('.searchBar').toggle();">
+                            <rect width="25" height="25"
+                                style="fill:transparent;stroke-width:3;stroke:rgb(111,111,111)" />
+                            <polyline points="5,8 12.5,18 20,8" style="fill:none;stroke:black;stroke-width:3" />
+                        </svg>
+                    </th>
+                    <th>Adet</th>
+                    <th>Fiyat</th>
+                    <th>Alış</th>
+                    <th>Satış</th>
+                    <nav class="navbar navbar-light bg-light searchBar" style="display: none;">
+                        <div class="container-fluid">
+                            <form class="d-flex">
+                                <input class="form-control me-2" type="search" onkeyup="search()" placeholder="Search"
+                                    aria-label="Search">
+                            </form>
+                        </div>
+                    </nav>
+                </tr>
+            </thead>
+            <tbody id="table1">
+
+            </tbody>
+        </table>
+        <table class="table table-bordered" style="display: none;" id="karZararTable">
+            <thead>
+                <tr>
+                    <th colspan="3" class="text-center" style="line-height: 38px;">Genel Toplam = <span id="gt"></span>
+                    </th>
+                    <th colspan="2">
+                        <div class="d-flex justify-content-around">
+                            <input type="number" class="form-control float-left" name="" id="portfoy"
+                                style="width: 100px; margin: 0;" placeholder="portföy" title="portföy değerini girin">
+                            <input type="button" value="Hesapla" onclick='hesapla()'
+                                class="btn btn-outline-secondary float-left" style="margin: 0;">
+                        </div>
+                    </th>
+                    <th colspan="2" style="line-height: 38px;"><span id="k-z"></span></th>
+                </tr>
+                <tr>
+                    <th>Sembol</th>
+                    <th colspan="2" class="text-center">Adet / Alışlar</th>
+                    <th colspan="2" class="text-center">Adet / Satışlar</th>
+                    <th>Kar-Zarar</th>
+                    <th>Yüzde</th>
+                </tr>
+            </thead>
+            <tbody id="table2">
+
+            </tbody>
+        </table>
+        <div id="jsObjects" style="display: none;" class="flex-column">
+            <input type="button" value="Copy" id="objCopy"
+                class="btn btn-outline-secondary mt-3 align-self-center w-50">
+            <div id="obj"></div>
+        </div>
+        <div id="jsSymbols" style="display: none;" class="flex-column">
+            <input type="button" value="Copy" id="symCopy"
+                class="btn btn-outline-secondary mt-3 align-self-center w-50">
+            <div id="sym"></div>
+        </div>
+    </div>
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+        crossorigin="anonymous"></script>
+    <script src="obj.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>
